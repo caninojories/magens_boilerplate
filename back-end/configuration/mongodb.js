@@ -2,10 +2,8 @@
   'use strict';
 
   module.exports = function (dbName) {
-    if( global.io.mongoose.connection.readyState === 0 ) {
-      return global.io.mongoose.connectAsync(dbName);
-    } else {
-      return global.io.mongoose.disconnectAsync();
+    if (io.mongoose.connection.readyState === 0) {
+      return io.mongoose.connectAsync(process.env.MONGOLAB_URI || dbName);
     }
   };
 }());

@@ -18,6 +18,7 @@
         'app.login',
         'app.layout',
         'app.widgets',
+        'ngConfig',
         /*
          * Our reusable cross app code modules
          */

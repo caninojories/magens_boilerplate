@@ -13,6 +13,8 @@
       watch: [config.server]
     };
 
+    if(args.nosync || browserSync.active) {return;}
+
     return nodemon(nodeOptions)
         .on('restart', function(ev) {
           logger(util, '*** Nodemon Restarted');
