@@ -50,6 +50,7 @@
     Promise           : require('bluebird'),
     qs                : require('querystring'),
     request           : require('request-promise'),
+    serveStatic       : require('serve-static'),
     url               : require('url'),
 
     port              : process.env.PORT || 3000,

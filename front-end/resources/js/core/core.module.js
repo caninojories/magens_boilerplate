@@ -9,23 +9,22 @@
         'ui.router',
         'restangular',
         //'ngSanitize',
-        /*
+        /**
          * Commons module
-        **/
-        'app.commons',
+         **/
+        // 'app.register',
+        // 'app.login',
+        'app.promise',
+        'app.promise.request',
         'app.services',
-        'app.register',
-        'app.login',
-        'app.layout',
         'app.widgets',
         'ngConfig',
         /*
          * Our reusable cross app code modules
          */
-        //'blocks.exception',
+        'blocks.exception',
         'blocks.logger',
         'blocks.router',
-        'blocks.exception',
         /*
          * 3rd Party modules
          */

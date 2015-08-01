@@ -3,6 +3,7 @@
 
   var gulp          = require('gulp'),
       annotate      = require('gulp-ng-annotate'),
+      bytediff      = require('gulp-bytediff'),
       csslint       = require('gulp-csslint'),
       csso          = require('gulp-csso'),
       filter        = require('gulp-filter'),
@@ -40,7 +41,7 @@
     util, handleErrors, logger, config);
   require('./gulp/tasks/gulp-watch-stylus.js')(gulp, config);
   require('./gulp/tasks/gulp-karma.js')(gulp, karma);
-  require('./gulp/tasks/wiredep.js')(gulp, inject, util, wiredep, logger, config);
+  require('./gulp/tasks/wiredep')(gulp, args, inject, util, wiredep, logger, config);
   require('./gulp/tasks/gulp-inject.js')(gulp, inject, util, wiredep, logger, config);
   require('./gulp/tasks/serve-dev.js')(args, browserSync, gulp, nodemon, util, logger, serve, config);
   require('./gulp/tasks/serve-build')(args, browserSync, gulp, nodemon, util, logger, serve, config);
@@ -49,9 +50,9 @@
   require('./gulp/tasks/fonts')(gulp, util, logger, config);
   require('./gulp/tasks/images')(gulp, imagemin, util, logger, config);
   require('./gulp/tasks/clean')(del, gulp, util, remove, logger, config);
-  require('./gulp/tasks/templateCache')(gulp, minifyHtml, templateCache, util, logger, config);
+  require('./gulp/tasks/templateCache')(gulp, args, bytediff, ifs, minifyHtml, templateCache, util, logger, config);
   require('./gulp/tasks/optimize')(gulp, annotate, csso, filter, inject, uglify, useref, util, logger, config);
   require('./gulp/tasks/copy')(gulp, util, logger, config);
-  require('./gulp/tasks/test')(gulp, util, logger, config);
+  require('./gulp/tasks/test')(gulp, args, util, logger, config);
   require('./gulp/tasks/constants')(gulp, ngConstant, util, logger);
 }());

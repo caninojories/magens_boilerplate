@@ -2,69 +2,106 @@
   'use strict';
 
   module.exports = function() {
+    /*declare our initialization here*/
+    var backEndJS = 'back-end/';
+    var clientJS  = 'front-end/resources/js/';
+    var ClientCSS = 'front-end/resources/css/';
+    var client    = 'front-end/views/';
+    var rootJS    = './';
+    var root      = __dirname + '/';
+    var bower     = {
+      json      : require('./bower.json'),
+      ignorePath: '../bower',
+      directory : 'front-end/bower',
+      exclude   : ['..bower/bootstrap/dist/js/bootstrap.js'],
+      fileTypes : {
+        html: {
+          replace: {
+            js  : '<script src="/bower{{filePath}}"></script>',
+            css : '<link rel="stylesheet" href="/bower{{filePath}}" />'
+          }
+        }
+      }
+  };
+
     var wiredep = require('wiredep');
     var bowerFiles = wiredep({devDependencies: true})['js'];
     var config = {
       adminRoutes: 'front-end/views/admin/**/*.*',
-
+      /*run jshint and jscs*/
       alljs: [
-        'front-end/resources/js/**/*.js',
-        './*.js',
-        'back-end/**/*.js'
+        clientJS  + '**/*.js',
+        rootJS    + '*.js',
+        backEndJS + '**/*.js',
+        '!' + clientJS + 'constants/*.js'
       ],
       build: './build/',
-      client: 'front-end/views/',
+      /*use for injecting our bowercomponents using wiredep*/
+      client: client,
+      /*use to copy our build tools for client html views*/
       clientRoutes: 'front-end/views/client/**/*.*',
       commons: 'front-end/views/commons/**/*.*',
+      /*user for temp css(concat) used for developement for gulp injects*/
       css: 'front-end/.tmp/stylus/app.css',
       fonts: ['front-end/resources/fonts/**/*.*', 'front-end/bower/bootstrap/fonts/*.*',
         'front-end/bower/ionicons/fonts/*.*', 'front-end/bower/flat-ui/fonts/**/*.*'],
-      htmlTemplates: 'front-end/views/**/*.html',
+      htmlTemplates: client + '**/*.html',
       images: 'front-end/resources/img/**/*.*',
-      index: 'front-end/views/index.html',
+      index: client + 'index.html',
+      /* app js, with no specs */
       js: [
-        'front-end/resources/js/**/*.module.js',
-        'front-end/resources/js/**/*.js'
+        clientJS + '**/*.module.js',
+        clientJS + '**/*.js',
+        '!' + clientJS + '**/*.spec.js'
       ],
-      stylus: 'front-end/resources/css/stylus/app.styl',
-      server: './back-end',
+      // jsOrder: [
+      //     '**/app.module.js',
+      //     '**/*.module.js',
+      //     '**/*.js'
+      // ],
+
+      /*use to get the root path of the app*/
+      root    : root,
+      stylus  : ClientCSS + '/stylus/app.styl',
+      server  : './back-end',
+      stubsjs : [
+        bower.directory + 'angular-mocks/angular-mocks.js',
+        client + 'stubs/**/*.js'
+      ],
       temp: 'front-end/.tmp/',
+
+      /**
+       * template cache
+       */
       templateCache: {
         file: 'templates.js',
         options: {
-          module: 'app.core',
+          module    : 'app.core',
           standalone: false,
         }
       },
       /*Bower and Npm Configurations*/
-      bower: {
-        json: require('./bower.json'),
-        directory: '.bowerrc'.directory,
-        exclude: ['..bower/bootstrap/dist/js/bootstrap.js'],
-        ignorePath: '../bower',
-        fileTypes: {
-          html: {
-            replace: {
-              js: '<script src="/bower{{filePath}}"></script>',
-              css: '<link rel="stylesheet" href="/bower{{filePath}}" />'
-            }
-          }
-        }
-      },
+      bower: bower,
       specHelpers: ['front-end/test-helpers/*.js'],
       serverIntegrationSpecs: ['front-end/tests/server-integration/**/*.spec.js'],
-      /* Node Server*/
-      defaultPort: 3004,
-      nodeServer: './back-end/server.js'
+
+      /**
+       * Node settings
+       **/
+       nodeServer: root + 'back-end/server.js',
+       defaultPort: '8001'
     };
 
+    /**
+     * wiredep and bower settings
+     **/
     config.getWireDepDefaultOptions = function() {
       var options = {
-        bowerJson: config.bower.json,
-        directory: config.bower.directory,
-        exclude: config.bower.exclude,
+        bowerJson : config.bower.json,
+        directory : config.bower.directory,
+        exclude   : config.bower.exclude,
         ignorePath: config.bower.ignorePath,
-        fileTypes: config.bower.fileTypes
+        fileTypes : config.bower.fileTypes
       };
       return options;
     };
@@ -73,15 +110,18 @@
 
     return config;
 
+    /**
+     * karma settings
+     */
     function getKarmaOptions() {
       var options = {
         files: [].concat(
           bowerFiles,
           config.specHelpers,
-          'front-end/resources/js/**/*.module.js',
-          'front-end/resources/js/**/*.js',
-          'front-end/.tmp/templates.js'
-          //config.serverIntegrationSpecs
+          clientJS + '**/*.module.js',
+          clientJS + '**/*.js',
+          config.temp + config.templateCache.file,
+          config.serverIntegrationSpecs
         ),
         exclude: [],
         coverage: {
@@ -96,7 +136,9 @@
 
         }
       };
-      options.preprocessors['front-end/' + '**/!(*.spec)+(.js)'] = ['coverage'];
+      options.preprocessors['front-end/resources/js/' + '**/!(*.spec)+(.js)'] = ['coverage'];
+      // options.preprocessors['front-end/' + '**/*.js'] = ['coverage'];
+
       return options;
     }
   };

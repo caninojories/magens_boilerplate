@@ -3,7 +3,7 @@
 
   /*Express Configuration*/
   module.exports = function(app) {
-    if (process.env.io_ENV === 'production' || process.env.NODE_ENV === 'production') {
+    if (io.environment === 'production' || process.env.NODE_ENV === 'production') {
       io.nunjucksEnvBuild.express(app);
       io.nunjucks.configure(io.nunjucksPathBuild, {
         autoescape: true,
@@ -49,8 +49,9 @@
     app.use(io.passport.initialize());
 
     /*Environment Setup*/
-    if (process.env.io_ENV === 'production' || process.env.NODE_ENV === 'production') {
+    if (io.environment === 'production' || process.env.NODE_ENV === 'production') {
       app.set('json spaces', 0);
+      app.set('view cache', true);
       app.use('/css', io.express.static(io.buildCss));
       app.use('/js', io.express.static(io.buildJs));
       app.use('/img', io.express.static(io.img));
@@ -58,11 +59,18 @@
       app.use('commons', io.express.static(io.commonViewsBuild));
     } else {
       app.set('json spaces', 2);
-      app.use('/css', io.express.static(io.css));
+      app.set('view cache', true);
+      app.use(function(req, res, next) {
+        res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+        next();
+      });
+      app.use('/css', io.express.static(io.css), {
+        maxAge: 9000
+      });
       app.use('/fonts', io.express.static(io.fonts));
       app.use('/img', io.express.static(io.img));
       app.use('/js', io.express.static(io.js));
-      app.use('/bower', io.express.static(io.bowerComponents));
+      app.use('/bower', io.serveStatic(io.bowerComponents));
       app.use('/commons', io.express.static(io.commonViews));
       app.use('/.tmp', io.express.static(io.compiledCss));
     }

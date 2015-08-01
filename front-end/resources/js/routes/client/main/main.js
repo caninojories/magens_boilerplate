@@ -5,11 +5,15 @@
     .module('app.main')
     .controller('Main', Main);
 
-    Main.$inject = ['$rootScope'];
+    Main.$inject = ['logger'];
 
-    /* @ngInject */
-    function Main($rootScope) {
+    /*@ngInject*/
+    function Main(logger) {
       var vm = this;
+
+      (function() {
+        logger.info('Activated Main view');
+      }());
 
     }
 }());

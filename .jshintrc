@@ -3,7 +3,7 @@
     "camelcase": false,
     "curly": true,
     "eqeqeq": true,
-    "es3": false,
+    "moz": true,
     "forin": true,
     "freeze": true,
     "immed": true,
@@ -29,7 +29,7 @@
     "boss": false,
     "debug": false,
     "eqnull": true,
-    "esnext": false,
+    "esnext": true,
     "evil": false,
     "expr": false,
     "funcscope": false,
@@ -55,10 +55,10 @@
     "node": true,
 
     "globals": {
-        "angular": false,
-        "appRequire": false,
-        "io": false,
-        "jcaLayout": false,
-        "$": false
+      "angular": false,
+      "appRequire": false,
+      "io": false,
+      "jcaLayout": false,
+      "$": false
     }
 }

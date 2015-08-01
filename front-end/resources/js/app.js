@@ -17,11 +17,11 @@
         'app.core',
         //'app.widgets',
 
-        /*
+        /**
          * Feature areas
-         */
-        //'app.avengers',
-        'app.main',
-        'app.sample',
+         **/
+        /*Client*/
+        'app.main'
+        /*Admin*/
     ]);
 })();

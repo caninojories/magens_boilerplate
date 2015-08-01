@@ -7,7 +7,8 @@
     var cssFilter = filter('**/*.css');
     var vendorFilter  = filter('**/vendor.js');
     var appFilter  = filter('**/app.js');
-    gulp.task('optimize', ['inject', 'fonts', 'images', 'copy'], function() {
+    // 'fonts', 'images', 'copy'
+    gulp.task('optimize', ['inject'], function() {
       logger(util, 'Optimizing the js css and html');
       return gulp
         .src(config.index)

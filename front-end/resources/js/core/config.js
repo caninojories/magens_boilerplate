@@ -2,8 +2,8 @@
     'use strict';
 
     var config = {
-      appErrorPrefix: '[Magens Error] ', //Configure the exceptionHandler decorator
-      appTitle: 'UDAYS Pageant: @by League of Outstanding Programmers',
+      appErrorPrefix: '[Magens Error] ',
+      appTitle: 'MAGENS Boilerplate',
       version: '0.0.0'
     };
 
@@ -25,7 +25,6 @@
     /* @ngInject */
     function registerNsignInConfig($authProvider, cfpLoadingBarProvider) {
       cfpLoadingBarProvider.latencyThreshold = 100;
-      console.log(window.location.origin);
       $authProvider.loginUrl    = window.location.origin + '/userApi/userLogIn';
       $authProvider.signupUrl   = window.location.origin + '/userApi/userRegister';
       $authProvider.tokenPrefix = 'magens';
@@ -42,22 +41,14 @@
     }
 
     configure.$inject = ['$httpProvider', '$locationProvider', '$logProvider', '$urlRouterProvider',
-      '$stateProvider', 'exceptionHandlerProvider', 'routehelperConfigProvider'];
+      '$stateProvider', 'exceptionHandlerProvider', 'routeHelperProvider'];
     /* @ngInject */
     function configure ($httpProvider, $locationProvider, $logProvider, $urlRouterProvider,
-      $stateProvider, exceptionHandlerProvider, routehelperConfigProvider) {
-
+      $stateProvider, exceptionHandlerProvider, routeHelperProvider) {
         $locationProvider.html5Mode(true);
-        if ($logProvider.debugEnabled) {
-          $logProvider.debugEnabled(true);
-        }
-
-        routehelperConfigProvider.config.$stateProvider = $stateProvider;
-        routehelperConfigProvider.config.$urlRouterProvider = $urlRouterProvider;
-        routehelperConfigProvider.config.docTitle = 'NG-Modular: ';
-
+        $logProvider.debugEnabled(true);
         $httpProvider.interceptors.push('authInterceptor');
         /*Configure the common exception handler*/
         exceptionHandlerProvider.configure(config.appErrorPrefix);
     }
-})();
+}());

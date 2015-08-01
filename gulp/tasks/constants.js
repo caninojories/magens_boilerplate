@@ -2,9 +2,9 @@
   'use strict';
 
   module.exports = function(gulp, ngConstant, util, logger) {
-    logger(util, 'Running constants');
     gulp.task('constants', function () {
-      var myConfig = require('./util/config.json');
+      logger(util, 'Running constants');
+      var myConfig  = require('./util/config.json');
       var envConfig = myConfig[process.env.NODE_ENV];
       return ngConstant({
         name: 'ngConfig',

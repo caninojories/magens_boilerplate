@@ -10,6 +10,7 @@
     "gulp": "^3.9.0",
     "gulp-angular-templatecache": "^1.5.0",
     "gulp-autoprefixer": "^2.1.0",
+    "gulp-bytediff": "^0.2.1",
     "gulp-csslint": "^0.1.5",
     "gulp-csso": "^1.0.0",
     "gulp-filter": "^2.0.0",
@@ -70,6 +71,7 @@
     "passport-local": "^1.0.0",
     "request-promise": "^0.3.3",
     "serve-favicon": "~2.0.1",
+    "serve-static": "^1.10.0",
     "yargs": "^3.0.4"
   },
   "scripts": {

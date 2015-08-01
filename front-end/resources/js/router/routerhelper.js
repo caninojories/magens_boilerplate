@@ -1,93 +1,101 @@
+/* Help configure the state-base ui.router */
 (function() {
     'use strict';
 
     angular
-      .module('blocks.router')
-      .provider('routehelperConfig', routehelperConfig)
-      .factory('routehelper', routehelper);
+        .module('blocks.router')
+        .provider('routeHelper', routerHelperProvider);
 
-    routehelper.$inject = ['$location', '$rootScope', '$q', '$state', '$timeout', '$window',
-      'logger', 'routehelperConfig'];
-
-    function routehelperConfig() {
-      /* jshint validthis:true */
-      this.config = {
-          // These are the properties we need to set
-          // $routeProvider: undefined
-          // docTitle: ''
-          // resolveAlways: {ready: function(){ } }
-      };
-
-      this.$get = function() {
-          return {
-              config: this.config
-          };
-      };
-    }
-
-    function routehelper($location, $rootScope, $q, $state, $timeout, $window,
-      logger, routehelperConfig) {
-        var handlingRouteChangeError = false;
-        // var routeCounts = {
-        //     errors: 0,
-        //     changes: 0
-        // };
-
-        var $stateProvider = routehelperConfig.config.$stateProvider;
-        var $urlRouterProvider = routehelperConfig.config.$urlRouterProvider;
-
-        var service = {
-            configureRoutes: configureRoutes
+    routerHelperProvider.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
+    /* @ngInject */
+    function routerHelperProvider($locationProvider, $stateProvider, $urlRouterProvider) {
+        /* jshint validthis:true */
+        var config = {
+            docTitle: undefined,
+            resolveAlways: {}
         };
 
-        init();
+        $locationProvider.html5Mode(true);
 
-        return service;
+        this.configure = function(cfg) {
+            angular.extend(config, cfg);
+        };
 
-        function configureRoutes(routes) {
-          routes.forEach(function(route) {
-              route.config.resolve =
-                  angular.extend(route.config.resolve || {},
-                  routehelperConfig.config.resolveAlways);
-              $stateProvider.state(route.state, route.config);
-          });
-          $urlRouterProvider.otherwise('/');
-        }
+        this.$get = RouterHelper;
+        RouterHelper.$inject = ['$location', '$rootScope', '$state', 'logger'];
+        /* @ngInject */
+        function RouterHelper($location, $rootScope, $state, logger) {
+            var handlingStateChangeError = false;
+            var hasOtherwise = false;
+            var stateCounts = {
+                errors: 0,
+                changes: 0
+            };
 
-        function handleRoutingErrors() {
-          /***
-           ** Route cancellation
-           ***/
-          $rootScope.$on('$stateChangeError',
-            function(event, current, previous, rejection) {
-              if (handlingRouteChangeError) {
-                  return;
-              }
-              //routeCounts.errors++;
-              handlingRouteChangeError = true;
-              var destination = (current && (current.title || current.name ||
-                current.loadedTemplateUrl)) || 'unknown target';
-              var msg = 'Error routing to ' + destination + '. ' + (rejection.msg || '');
-              logger.warning(msg, [current]);
-              $location.path('/');
+            var service = {
+                configureRoutes: configureRoutes,
+                getStates: getStates,
+                stateCounts: stateCounts
+            };
+
+            init();
+
+            return service;
+
+            ///////////////
+
+            function configureRoutes(states, otherwisePath) {
+                states.forEach(function(state) {
+                    state.config.resolve =
+                        angular.extend(state.config.resolve || {}, config.resolveAlways);
+                    $stateProvider.state(state.state, state.config);
+                });
+                if (otherwisePath && !hasOtherwise) {
+                    hasOtherwise = true;
+                    $urlRouterProvider.otherwise(otherwisePath);
+                }
             }
-          );
-        }
 
-        function init() {
-          handleRoutingErrors();
-          updateDocTitle();
-        }
-
-        function updateDocTitle() {
-          $rootScope.$on('$stateChangeSuccess',
-            function(event, toState, toParams, fromState, fromParams) {
-              //routeCounts.changes++;
-              handlingRouteChangeError = false;
-              var title = routehelperConfig.config.docTitle + ' ' + (toState.title || '');
-              $rootScope.title = title;
+            function handleRoutingErrors() {
+                // Route cancellation:
+                // On routing error, go to the dashboard.
+                // Provide an exit clause if it tries to do it twice.
+                $rootScope.$on('$stateChangeError',
+                    function(event, toState, toParams, fromState, fromParams, error) {
+                        if (handlingStateChangeError) {
+                            return;
+                        }
+                        stateCounts.errors++;
+                        handlingStateChangeError = true;
+                        var destination = (toState &&
+                            (toState.title || toState.name || toState.loadedTemplateUrl)) ||
+                            'unknown target';
+                        var msg = 'Error routing to ' + destination + '. ' +
+                            (error.data || '') + '. <br/>' + (error.statusText || '') +
+                            ': ' + (error.status || '');
+                        logger.warning(msg, [toState]);
+                        $location.path('/');
+                    }
+                );
             }
-          );
+
+            function init() {
+                handleRoutingErrors();
+                updateDocTitle();
+            }
+
+            function getStates() { return $state.get(); }
+
+            function updateDocTitle() {
+                $rootScope.$on('$stateChangeSuccess',
+                    function(event, toState, toParams, fromState, fromParams) {
+                        stateCounts.changes++;
+                        handlingStateChangeError = false;
+                        var title = config.docTitle + ' ' + (toState.title || '');
+                        $rootScope.title = title; // data bind to <title>
+                    }
+                );
+            }
         }
     }
 })();

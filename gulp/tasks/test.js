@@ -1,34 +1,54 @@
 (function() {
   'use strict';
 
-  module.exports = function(gulp, util, logger, config) {
+  /**
+   * Run specs once and exit
+   * To start servers and run midway specs as well:
+   *    gulp test --startServers
+   * @return {Stream}
+   */
+  module.exports = function(gulp, args, util, logger, config) {
     gulp.task('test', ['jscshint', 'templatecache'], function(done) {
-      startTest(true, done, util, logger, config);
+      startTest(true, done, args, util, logger, config);
     });
   };
-  function startTest(singleRun, done, util, logger, config) {
-    var karma = require('karma').server;
-    var excludeFiles = [];
-    var serverSpecs = config.serverIntegrationSpecs;
-    var path = require('path');
-    var dirName = path.normalize(__dirname + '../../../');
 
-    excludeFiles = serverSpecs;
+  function startTest(singleRun, done, args, util, logger, config) {
+    var child;
+    var excludeFiles = [];
+    var fork = require('child_process').fork;
+    var karma = require('karma').server;
+    var serverSpecs = config.serverIntegrationSpecs;
+
+    if (args.startServers) {
+        logger(util, 'Starting servers');
+        var savedEnv = process.env;
+        savedEnv.NODE_ENV = 'development';
+        savedEnv.PORT = 8888;
+        child = fork(config.nodeServer);
+    } else {
+        if (serverSpecs && serverSpecs.length) {
+            excludeFiles = serverSpecs;
+        }
+    }
 
     karma.start({
-      configFile: dirName + 'karma.conf.js',
-      exclude: excludeFiles,
-      singleRun: !!singleRun
+        configFile: config.root + 'karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun
     }, karmaCompleted);
 
     function karmaCompleted(karmaResult) {
-      logger(util, 'Karma Completed');
-
-      if (karmaResult === 1) {
-        done('karma: tests failed with code ' + karmaResult);
-      } else {
-        done();
-      }
+        logger(util, 'Karma completed');
+        if (child) {
+            logger(util, 'shutting down the child process');
+            child.kill();
+        }
+        if (karmaResult === 1) {
+            done('karma: tests failed with code ' + karmaResult);
+        } else {
+            done();
+        }
     }
   }
 }());
