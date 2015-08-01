@@ -28,9 +28,5 @@
     it('should have a check_email_in_blurred instantiation', function() {
       expect(controller.check_email_in_blurred).to.exist;
     });
-
-    it('should have a check_email_in_blurred instantiation', function() {
-      return controller.check_email_in_blurred(sign_form).should.eventually.equal('foo');
-    });
   });
 }());
