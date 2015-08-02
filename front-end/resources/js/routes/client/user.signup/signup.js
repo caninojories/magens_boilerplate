@@ -11,18 +11,21 @@
       /*third party services/factory*/
       '$auth',
       /*custom services/factory*/
-      'exception', 'GetDataQuery', 'userAPI',
+      'exception', 'DataQuery', 'userAPI',
       /*custom directives*/
       'strapModal', 'strapAlert'
     ];
 
     function Signup($q, $rootScope, $timeout,
       $auth,
-      exception, GetDataQuery, userAPI,
+      exception, DataQuery, userAPI,
       strapModal, strapAlert) {
       var vm = this;
       /*Initialization*/
       vm.user                     = {};
+      /*use for testing in karma*/
+      vm.response                 = undefined;
+      vm.signup                   = {};
       vm.isAuthenticated          = $auth.isAuthenticated;
       /*Functions*/
       vm.check_email_in_blurred   = check_email_in_blurred;
@@ -42,19 +45,20 @@
       }
 
       function check_email_in_blurred(sign_form) {
-        var data =  new GetDataQuery(
-          'email/check',
-          userAPI,
-          {}
-        ).then(function(response) {
-          vm.user = response[0];
-
-          if (vm.user !== undefined) {
-            sign_form.email.$setValidity('taken', false);
-          } else {
-            sign_form.email.$setValidity('taken', true);
-          }
-        });
+        return new DataQuery
+          .get(
+            'email/check',
+            userAPI,
+            {}
+          ).then(function(response) {
+            vm.user = sign_form.response || response[0];
+            
+            if (vm.user !== undefined) {
+              sign_form.email.$setValidity('taken', false);
+            } else {
+              sign_form.email.$setValidity('taken', true);
+            }
+          });
       }
 
       function signup(signup_form_is_valid) {

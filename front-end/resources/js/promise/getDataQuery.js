@@ -3,12 +3,18 @@
 
   angular
     .module('app.promise')
-    .factory('GetDataQuery', GetDataQuery);
+    .factory('DataQuery', DataQuery);
 
-    GetDataQuery.$inject = ['$q', '$timeout', 'withQuery'];
+    DataQuery.$inject = ['$q', '$timeout', 'withQuery'];
     /*@ngInject*/
-    function GetDataQuery($q, $timeout, withQuery) {
-      return function(api, restApi, queryParams) {
+    function DataQuery($q, $timeout, withQuery) {
+      var service = {
+        get : get
+      };
+
+      return service;
+
+      function get(api, restApi, queryParams) {
         return $q(function(resolve, reject) {
           $timeout(function() {
             withQuery
@@ -18,6 +24,6 @@
               });
           }, 0);
         });
-      };
+      }
     }
 }());

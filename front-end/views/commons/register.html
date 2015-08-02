@@ -1,6 +1,6 @@
 
-  <div class='modal register' tabindex='-1' role='dialog' ng-controller='Register as vm'>
-    <form ng-submit='vm.register(signupForm.$valid, vm.email, vm.username, vm.password, vm.confirmPassword )' class='modal-dialog' name='signupForm' novalidate='novalidate'>
+  <div class='modal register' tabindex='-1' role='dialog' ng-controller='Signup as vm'>
+    <form ng-submit='vm.register(signupForm.$valid, vm.email, vm.username, vm.password, vm.confirmPassword )' class='modal-dialog' name='vm.signup.form' novalidate='novalidate'>
       <div class='modal-content'>
         <div class='modal-header'>
           <button type='button' class='close' ng-click='$hide()'>&times;</button>
