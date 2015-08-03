@@ -15,9 +15,10 @@
     node.cluster.on('online', function(worker) {
       console.log(worker.id + ' is online');
     });
+    
     node.cluster.on('listening', function(worker, address) {
       clearTimeout(timeouts[worker.id]);
-      console.log('A worker is now connected to ' + address.address + ':' + address.port);
+      console.log('A worker is now connected to localhost: ' + address.port);
     });
   };
   /*Function for using Error Message for the Worker*/

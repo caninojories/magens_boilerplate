@@ -12,8 +12,7 @@
         /**
          * Commons module
          **/
-        // 'app.register',
-        // 'app.login',
+        'app.layout',
         'app.promise',
         'app.promise.request',
         'app.services',

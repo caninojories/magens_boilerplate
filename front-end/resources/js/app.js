@@ -21,7 +21,9 @@
          * Feature areas
          **/
         /*Client*/
-        'app.main'
+        'app.main',
+        'app.signup',
+        'app.signin'
         /*Admin*/
     ]);
 })();

@@ -23,14 +23,12 @@
       var vm = this;
       /*Initialization*/
       vm.user                     = {};
-      /*use for testing in karma*/
-      vm.response                 = undefined;
-      vm.signup                   = {};
       vm.isAuthenticated          = $auth.isAuthenticated;
       /*Functions*/
       vm.check_email_in_blurred   = check_email_in_blurred;
+      vm.user.signup              = user_signup;
 
-      function registerUser() {
+      function user_signup() {
         strapModal.show('am-fade-and-scale', 'center', 'commons/register.html');
       }
 
@@ -51,8 +49,7 @@
             userAPI,
             {}
           ).then(function(response) {
-            vm.user = sign_form.response || response[0];
-            
+            vm.user = response[0];
             if (vm.user !== undefined) {
               sign_form.email.$setValidity('taken', false);
             } else {

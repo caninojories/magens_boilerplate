@@ -2,35 +2,34 @@
   'use strict';
 
   angular
-    .module('app.login')
-    .controller('Login', Login);
+    .module('app.signin')
+    .controller('Signin', Signin);
 
     /*Inject angular related directive*/
-    Login.$inject = ['$q', '$rootScope', '$auth', '$timeout', 'strapAlert', 'strapModal', 'commonsDataService'];
+    Signin.$inject = ['$q', '$rootScope', '$auth', '$timeout', 'strapAlert', 'strapModal'];
 
-    function Login($q, $rootScope, $auth, $timeout, strapAlert, strapModal, commonsDataService) {
+    function Signin($q, $rootScope, $auth, $timeout, strapAlert, strapModal) {
       var vm = this;
       vm.isAuthenticated = $auth.isAuthenticated;
       vm.authenticate    = authenticate;
       vm.logInUser       = logInUser;
       vm.logOut          = logOut;
       vm.login           = login;
-      getAuthorization();
 
-      function getAuthorization() {
-        return $q.all([getAuthorizationCallBack()])
-        .then(function(response) {
-          $rootScope.username = response[0].displayName;
-          return response;
-        });
-      }
+      // function getAuthorization() {
+      //   return $q.all([getAuthorizationCallBack()])
+      //   .then(function(response) {
+      //     $rootScope.username = response[0].displayName;
+      //     return response;
+      //   });
+      // }
 
-      function getAuthorizationCallBack() {
-        return commonsDataService.authorize()
-          .then(function(response) {
-            return response;
-          });
-      }
+      // function getAuthorizationCallBack() {
+      //   return commonsDataService.authorize()
+      //     .then(function(response) {
+      //       return response;
+      //     });
+      // }
 
       function logInUser() {
         strapModal.show('am-fade-and-scale', 'center', 'commons/login.html');
