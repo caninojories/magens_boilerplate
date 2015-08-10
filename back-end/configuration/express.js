@@ -52,20 +52,31 @@
     if (io.environment === 'production' || process.env.NODE_ENV === 'production') {
       app.set('json spaces', 0);
       app.set('view cache', true);
-      app.use('/css', io.express.static(io.buildCss));
-      app.use('/js', io.express.static(io.buildJs));
-      app.use('/img', io.express.static(io.img));
-      app.use('/fonts', io.express.static(io.buildFonts));
-      app.use('commons', io.express.static(io.commonViewsBuild));
+      app.use('/css', io.express.static(io.buildCss), {
+        maxAge: 9000
+      });
+      app.use('/js', io.express.static(io.buildJs), {
+        maxAge: 9000
+      });
+      app.use('/img', io.express.static(io.img), {
+        maxAge: 9000
+      });
+      app.use('/fonts', io.express.static(io.buildFonts), {
+        maxAge: 9000
+      });
+      /*use for the templatecache of angularjs*/
+      app.use('/commons', io.express.static(io.commonViewsBuild), {
+        maxAge: 9000
+      });
+      app.use('/client', io.express.static(io.clientViewsBuild), {
+        maxAge: 9000
+      });
     } else {
       app.set('json spaces', 2);
       app.set('view cache', true);
       app.use(function(req, res, next) {
         res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
         next();
-      });
-      app.use('/css', io.express.static(io.css), {
-        maxAge: 9000
       });
       app.use('/fonts', io.express.static(io.fonts));
       app.use('/img', io.express.static(io.img));

@@ -43,8 +43,13 @@
       commons: 'front-end/views/commons/**/*.*',
       /*user for temp css(concat) used for developement for gulp injects*/
       css: 'front-end/.tmp/stylus/app.css',
-      fonts: ['front-end/resources/fonts/**/*.*', 'front-end/bower/bootstrap/fonts/*.*',
-        'front-end/bower/ionicons/fonts/*.*', 'front-end/bower/flat-ui/fonts/**/*.*'],
+      fonts: [
+        bower.directory + '/bootstrap/fonts/**/*.*',
+        bower.directory + '/ionicons/fonts/**/*.*',
+        bower.directory + '/flat-ui/fonts/**/*.*'
+      ],
+      // fonts: ['front-end/resources/fonts/**/*.*', 'front-end/bower/bootstrap/fonts/*.*',
+      //   'front-end/bower/ionicons/fonts/*.*', 'front-end/bower/flat-ui/fonts/**/*.*'],
       htmlTemplates: client + '**/*.html',
       images: 'front-end/resources/img/**/*.*',
       index: client + 'index.html',
@@ -62,8 +67,9 @@
 
       /*use to get the root path of the app*/
       root    : root,
+      /*use to watch the changes in the server when running serve-build and serve-dev*/
+      server  : root + 'back-end',
       stylus  : ClientCSS + '/stylus/app.styl',
-      server  : './back-end',
       stubsjs : [
         bower.directory + 'angular-mocks/angular-mocks.js',
         client + 'stubs/**/*.js'
@@ -73,7 +79,7 @@
       /**
        * template cache
        */
-      templateCache: {
+      template_cache: {
         file: 'templates.js',
         options: {
           module    : 'app.core',
@@ -88,7 +94,7 @@
       /**
        * Node settings
        **/
-       nodeServer: root + 'back-end/server.js',
+       node_server: root + 'back-end/server.js',
        defaultPort: '8001'
     };
 
@@ -120,7 +126,7 @@
           config.specHelpers,
           clientJS + '**/*.module.js',
           clientJS + '**/*.js',
-          config.temp + config.templateCache.file,
+          config.temp + config.template_cache.file,
           config.serverIntegrationSpecs
         ),
         exclude: [],

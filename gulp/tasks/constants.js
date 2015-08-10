@@ -1,17 +1,18 @@
 (function() {
   'use strict';
 
-  module.exports = function(gulp, ngConstant, util, logger) {
-    gulp.task('constants', function () {
-      logger(util, 'Running constants');
-      var myConfig  = require('./util/config.json');
+  var myConfig  = require('./util/config.json');
+
+  module.exports = function(require) {
+    require.gulp.task('constants', function () {
+      require.logger(require.$.util, 'Running constants');
       var envConfig = myConfig[process.env.NODE_ENV];
-      return ngConstant({
+      return require.$.ngConstant({
         name: 'ngConfig',
         constants: envConfig,
         stream: true
       })
-      .pipe(gulp.dest('front-end/resources/js/constants'));
+      .pipe(require.gulp.dest('front-end/resources/js/constants'));
     });
   };
 }());

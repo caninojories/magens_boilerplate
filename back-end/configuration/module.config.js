@@ -71,6 +71,7 @@
     buildFonts        : path.join(rootPath, 'build/fonts'),
     buildImg          : path.join(rootPath, 'build/img'),
     buildJs           : path.join(rootPath, 'build/js'),
-    commonViewsBuild  : path.join(rootPath, 'build/commons')
+    commonViewsBuild  : path.join(rootPath, 'build/common'),
+    clientViewsBuild  : path.join(rootPath, 'front-end/views/client'),
   };
 }());
