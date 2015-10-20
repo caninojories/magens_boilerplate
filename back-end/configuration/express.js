@@ -38,7 +38,6 @@
       extended: true
     }));
     app.use(io.bodyParser.json());
-    app.use(io.multer());
     app.use(io.methodOverride(function(req, res) {
       if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         var method = req.body._method;
